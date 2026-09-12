@@ -109,7 +109,7 @@ GNU General Public License v3.0 only (`GPL-3.0-only`). See `LICENSE`.
 
 **Alexey Valero-Jorge**
 
-Affiliation: CENTRO DE INVESTIGACIÓN Y TECNOLOGÍA AGROALIMENTARIA DE ARAGÓN.
-ORCID: https://orcid.org/0000-0002-5993-7346
-Email: avalero@cita-aragon.es
-repository/DOI:
+> Affiliation: CENTRO DE INVESTIGACIÓN Y TECNOLOGÍA AGROALIMENTARIA DE ARAGÓN.
+> ORCID: https://orcid.org/0000-0002-5993-7346
+> Email: avalero@cita-aragon.es
+> repository/DOI:
