@@ -97,7 +97,7 @@ Official source repository:
 
 Provisional citation:
 
-> Valero-Jorge, A. (2026). *CropWater-RS* (Version 1.0.0) [Computer software].
+> Valero-Jorge, A. (2026). CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit (Version 1.0.0) [Computer software]. https://github.com/avalero92/CropWater-RS.
 
 After Zenodo assigns a DOI, add it to `software_metadata.json`, `CITATION.cff` and this README.
 
