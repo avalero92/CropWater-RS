@@ -1,0 +1,27 @@
+{
+  "title": "CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit",
+  "upload_type": "software",
+  "description": "CropWater-RS is a desktop scientific application for parcel-level crop monitoring and irrigation-water analysis using Sentinel-2 vegetation dynamics, temporal reconstruction, direct Kc-NDVI relationships, ETc/CWR, simplified net IWR, QUANT phenological partitioning and parcel-level spatial visualization.",
+  "creators": [
+    {
+      "name": "Valero-Jorge, Alexey"
+    }
+  ],
+  "license": "GPL-3.0",
+  "access_right": "open",
+  "keywords": [
+    "remote sensing",
+    "Sentinel-2",
+    "crop phenology",
+    "irrigation",
+    "evapotranspiration",
+    "crop coefficient",
+    "Kc",
+    "NDVI",
+    "FAO-56",
+    "Copernicus",
+    "precision agriculture"
+  ],
+  "version": "1.0.0",
+  "language": "eng"
+}

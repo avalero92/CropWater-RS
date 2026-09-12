@@ -1,0 +1,16 @@
+name: cropwater-rs
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy>=2.0
+  - pandas>=2.2
+  - geopandas>=1.0
+  - shapely>=2.0
+  - matplotlib>=3.8
+  - scipy>=1.11
+  - pyproj>=3.6
+  - pyogrio>=0.9
+  - pip
+  - pip:
+      - sentinelhub>=3.11
