@@ -18,7 +18,8 @@ import geopandas as gpd
 from shapely.geometry import Point
 import matplotlib.dates as mdates
 from matplotlib.figure import Figure
-from matplotlib.cm import ScalarMappable, get_cmap
+from matplotlib.cm import ScalarMappable
+from matplotlib import colormaps
 from matplotlib.colors import BoundaryNorm
 from matplotlib.patches import Patch
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -41,7 +42,7 @@ from sentinelhub import (
 )
 
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 APP_TITLE = f"CropWater-RS v{APP_VERSION} — Remote Sensing · Phenology · Irrigation"
 
 CROPS = [
@@ -3554,7 +3555,7 @@ class CropWaterRSApp(tk.Tk):
                         linewidth=1.1,
                     )
                 else:
-                    cmap = get_cmap("tab20", max(len(categories), 1))
+                    cmap = colormaps.get_cmap("tab20").resampled(max(len(categories), 1))
                     category_to_code = {
                         cat: i for i, cat in enumerate(sorted(categories))
                     }
@@ -3624,7 +3625,7 @@ class CropWaterRSApp(tk.Tk):
                         )
 
                     n_intervals = len(boundaries) - 1
-                    cmap = get_cmap("viridis", n_intervals)
+                    cmap = colormaps.get_cmap("viridis").resampled(n_intervals)
                     norm = BoundaryNorm(
                         boundaries, cmap.N, clip=True
                     )
@@ -5191,6 +5192,18 @@ class CropWaterRSApp(tk.Tk):
                     f"Original error: {exc}"
                 ) from exc
 
+            # Defensive post-condition: SG must yield one finite value per day.
+            sg_values = np.asarray(sg_values, dtype=float)
+            if sg_values.shape[0] != len(daily_index):
+                raise ValueError(
+                    "Savitzky-Golay returned an unexpected number of values "
+                    f"({sg_values.shape[0]} instead of {len(daily_index)})."
+                )
+            if not np.isfinite(sg_values).any():
+                raise ValueError(
+                    "Savitzky-Golay returned no finite NDVI values."
+                )
+
             reconstructed = pd.Series(
                 sg_values,
                 index=daily_index,
@@ -5235,6 +5248,18 @@ class CropWaterRSApp(tk.Tk):
             "date": pd.to_datetime(output_dates),
             "ndvi_processed": output_values,
         })
+
+        # A processed method must always expose an actual temporal series.
+        # Failing here is preferable to silently storing an empty result that
+        # later appears as if the method had done nothing in the GUI.
+        if method != "Raw observations":
+            processed_numeric = pd.to_numeric(
+                output["ndvi_processed"], errors="coerce"
+            )
+            if output.empty or not np.isfinite(processed_numeric.to_numpy(dtype=float)).any():
+                raise ValueError(
+                    f"{method} produced no finite temporal NDVI series."
+                )
 
         diagnostics = self._temporal_diagnostics(good, reconstructed, method)
 
@@ -5931,9 +5956,43 @@ class CropWaterRSApp(tk.Tk):
                 rename[mapping["parcel_id"]] = "parcel_id"
 
             df = df.rename(columns=rename)
-            df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.normalize()
-            if df["Date"].isna().any():
-                raise ValueError("Some Date values could not be parsed.")
+
+            # Parse dates deterministically. CropWater-RS accepts the two
+            # documented formats used most often by the target workflows:
+            # ISO YYYY-MM-DD and European DD/MM/YYYY. Avoid pandas' generic
+            # inference because mixed/ambiguous day-month values can otherwise
+            # be silently interpreted incorrectly.
+            raw_dates = df["Date"].astype(str).str.strip()
+            parsed_dates = pd.Series(pd.NaT, index=df.index, dtype="datetime64[ns]")
+
+            iso_mask = raw_dates.str.match(r"^\d{4}-\d{2}-\d{2}$", na=False)
+            if iso_mask.any():
+                parsed_dates.loc[iso_mask] = pd.to_datetime(
+                    raw_dates.loc[iso_mask],
+                    format="%Y-%m-%d",
+                    errors="coerce",
+                )
+
+            dmy_mask = raw_dates.str.match(r"^\d{1,2}/\d{1,2}/\d{4}$", na=False)
+            if dmy_mask.any():
+                parsed_dates.loc[dmy_mask] = pd.to_datetime(
+                    raw_dates.loc[dmy_mask],
+                    format="%d/%m/%Y",
+                    errors="coerce",
+                )
+
+            invalid_dates = parsed_dates.isna()
+            if invalid_dates.any():
+                examples = ", ".join(
+                    raw_dates.loc[invalid_dates].head(5).astype(str).tolist()
+                )
+                raise ValueError(
+                    "Some Date values could not be parsed. Accepted formats are "
+                    "YYYY-MM-DD and DD/MM/YYYY."
+                    + (f" Examples: {examples}" if examples else "")
+                )
+
+            df["Date"] = parsed_dates.dt.normalize()
 
             df["ETo"] = pd.to_numeric(df["ETo"], errors="coerce")
             if df["ETo"].isna().any():
