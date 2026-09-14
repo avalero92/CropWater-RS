@@ -5,7 +5,9 @@
 </p>
 
 <p align="center">
-  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22746413.svg)](https://doi.org/10.5281/zenodo.22746413)
+  <a href="https://doi.org/10.5281/zenodo.22746413">
+    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22746413.svg" alt="DOI">
+  </a>
 </p>
 
 **Remote Sensing · Phenology · Irrigation**
