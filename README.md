@@ -2,7 +2,10 @@
 
 ![](https://raw.githubusercontent.com/avalero92/CropWater-RS/main/assets/cropwater_rs_logo.png)
 
-[![](https://zenodo.org/badge/DOI/10.5281/zenodo.23279404.svg)](https://doi.org/10.5281/zenodo.23279404)
+[![DOI: 10.5281/zenodo.23279404](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23279404-blue)](https://doi.org/10.5281/zenodo.23279404)
+[![GitHub Release](https://img.shields.io/github/v/release/avalero92/CropWater-RS?label=release)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0--only-green)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D4)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0)
 
 CropWater-RS is an open-source desktop application for parcel-level crop monitoring and irrigation-water analysis. Version 2.0.0 combines Sentinel-2 Level-2A imagery, NDVI quality control and daily temporal reconstruction, QUANT-based phenological transitions, crop-coefficient relationships, evapotranspiration and simplified net irrigation requirements in a graphical workflow.
 
