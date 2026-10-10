@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0] — Unreleased (publication pending)
+## [2.0.0] — 2026-10-10
 
 ### Added and changed
 - PySide6 desktop application workflow replacing the earlier Tkinter interface.

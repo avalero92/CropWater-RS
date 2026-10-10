@@ -2,7 +2,7 @@
 
 ![](https://raw.githubusercontent.com/avalero92/CropWater-RS/main/assets/cropwater_rs_logo.png)
 
-[![](https://zenodo.org/badge/DOI/10.5281/zenodo.22746413.svg)](https://doi.org/10.5281/zenodo.22746413)
+[![](https://zenodo.org/badge/DOI/10.5281/zenodo.23279404.svg)](https://doi.org/10.5281/zenodo.23279404)
 
 CropWater-RS is an open-source desktop application for parcel-level crop monitoring and irrigation-water analysis. Version 2.0.0 combines Sentinel-2 Level-2A imagery, NDVI quality control and daily temporal reconstruction, QUANT-based phenological transitions, crop-coefficient relationships, evapotranspiration and simplified net irrigation requirements in a graphical workflow.
 
@@ -26,7 +26,7 @@ QUANT-based spectral transitions provide an additional phenological partitioning
 
 ## Installation and getting started
 
-For **v2.0.0 on Windows**, use the installer supplied with the matching v2.0.0 distribution once the GitHub Release is published. See [installation instructions](docs/INSTALLATION.md) and the [user guide](USER_GUIDE.md). To run from source, use the PySide6 entry point `cropwater_rs_qt.py` and `requirements-qt.txt` as documented in the installation guide.
+For **v2.0.0 on Windows**, download and run [CropWater-RS_2.0.0_Setup.exe](https://github.com/avalero92/CropWater-RS/releases/download/v2.0.0/CropWater-RS_2.0.0_Setup.exe) from the [official v2.0.0 GitHub Release](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0). The release also provides a SHA-256 checksum file for integrity verification. See [installation instructions](docs/INSTALLATION.md) and the [user guide](USER_GUIDE.md). To run from source, use the PySide6 entry point `cropwater_rs_qt.py` and `requirements-qt.txt` as documented in the installation guide.
 
 For data acquisition, users must supply their own CDSE credentials. **Never commit Client Secrets or credentials to the repository.**
 
@@ -64,7 +64,7 @@ Retain the input parcel geometries, dates, meteorological inputs, selected NDVI 
 
 **Author:** Alexey Valero-Jorge — Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA), Aragón, Spain.
 
-Cite the software using the [CITATION.cff](CITATION.cff) metadata and the relevant Zenodo version record. Concept DOI: [10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.22746413). For an archived version, use its version-specific DOI when available.
+Cite the software using the [CITATION.cff](CITATION.cff) metadata and the relevant Zenodo version record. Concept DOI: [10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.23279404). For an archived version, use its version-specific DOI when available.
 
 ## License
 

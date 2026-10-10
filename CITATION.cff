@@ -8,6 +8,8 @@ authors:
     affiliation: "Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA)"
     orcid: "https://orcid.org/0000-0002-5993-7346"
 version: "2.0.0"
+doi: "10.5281/zenodo.23279404"
+date-released: 2026-10-10
 license: "GPL-3.0-only"
 repository-code: "https://github.com/avalero92/CropWater-RS"
 keywords:
