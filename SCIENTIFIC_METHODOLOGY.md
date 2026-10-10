@@ -19,7 +19,11 @@ CropWater-RS retrieves Sentinel-2 Level-2A imagery through the Copernicus Data S
 ### 2.2 Bands and spectral index
 The evalscripts request B04 (red), B08 (near infrared), the Scene Classification Layer (SCL), and `dataMask`. The index is computed for valid pixels as:
 
-\[ NDVI = \frac{B08 - B04}{B08 + B04}. \]
+
+$$
+NDVI = \frac{B08 - B04}{B08 + B04}.
+$$
+
 
 For the statistical workflow, a zero denominator produces `NaN`. For raster export, the denominator must be positive; invalid pixels are written as `-9999` (GeoTIFF nodata). The retrieved spectral values are supplied by the Sentinel Hub service; this implementation does not perform an additional explicit radiometric scaling step in Python.
 
@@ -31,7 +35,11 @@ The code does **not** explicitly exclude SCL **2** (topographic cast shadows / d
 ### 2.4 Parcel-level statistical time series
 The Statistical API uses an aggregation resolution of **10 m × 10 m**, with the `leastCC` mosaicking order. Supported aggregation intervals are `P1D`, `P5D`, `P10D`, and `P1M`. Returned fields include interval start/end, NDVI mean, standard deviation, minimum, maximum, 25th/50th/75th percentiles, `sampleCount`, and `noDataCount`. The software computes:
 
-\[ Valid\ fraction\ (\%) = 100\,\frac{sampleCount-noDataCount}{sampleCount}, \]
+
+$$
+Valid\ fraction\ (\%) = 100\,\frac{sampleCount-noDataCount}{sampleCount},
+$$
+
 
 when `sampleCount > 0`. The downstream preprocessing module uses **NDVI P50**, rather than mean NDVI, as its required observation variable.
 
@@ -88,15 +96,19 @@ A daily baseline is generated using pandas time-based interpolation between obse
 
 Whittaker reconstruction minimizes a weighted data-fidelity term and a second-difference roughness penalty:
 
-\[
+
+$$
 \hat{\mathbf z}=\arg\min_{\mathbf z}\left[\sum_t w_t(y_t-z_t)^2+\lambda\sum_t(\Delta^2 z_t)^2\right],
-\]
+$$
+
 
 where `w_t = 1` on observed days and `0` on missing days, and `λ` controls smoothness. The implementation solves the sparse linear system
 
-\[
+
+$$
 (\mathbf W+\lambda\mathbf D^\mathsf T\mathbf D)\hat{\mathbf z}=\mathbf W\mathbf y_0,
-\]
+$$
+
 
 with a second-order difference operator `D`, sparse matrices, and SciPy `spsolve`. The interface defaults to **λ = 100**, adjustable from **0.01 to 10,000,000**. Higher λ values impose stronger smoothness. The method is not described as asymmetric Whittaker or as incorporating robust iterative outlier weights, because neither mechanism is implemented here.
 
@@ -110,9 +122,11 @@ This is a smoothing operation on a preinterpolated daily baseline, **not** a mis
 
 The Kalman option implements a scalar local-level state-space model with a forward filter followed by a Rauch–Tung–Striebel (RTS) backward smoother. In conceptual form,
 
-\[
+
+$$
 x_t=x_{t-1}+\eta_t,\qquad y_t=x_t+\epsilon_t,
-\]
+$$
+
 
 with process noise variance `q` and observation noise variance `r`. Missing observations skip the measurement update, while state prediction continues. The implementation derives `r = max(0.05 Var(y_obs), 10^{-5})`, using a fallback variance of 0.01 if the observed variance is too small or nonfinite. It derives `q = max(0.05 Var(diff(y_obs)), 10^{-6})` when successive observed differences exist (otherwise a fallback based on the scale). These are code-defined heuristic variance estimates, not user-calibrated or maximum-likelihood-fitted noise parameters. The initial state is the first observed NDVI, with initial state variance 1.
 
@@ -122,13 +136,17 @@ The interface provides a **Constrain NDVI [0,1]** option, enabled by default. Wh
 
 The daily output includes `date`, `ndvi_observed`, and `ndvi_reconstructed_daily`, together with `parcel_id` in the PySide6 adapter. Diagnostics at observed dates are computed as:
 
-\[
-RMSE=\sqrt{n^{-1}\sum_i(y_i-\hat y_i)^2},\qquad MAE=n^{-1}\sum_i|y_i-\hat y_i|,
-\]
 
-\[
+$$
+RMSE=\sqrt{n^{-1}\sum_i(y_i-\hat y_i)^2},\qquad MAE=n^{-1}\sum_i|y_i-\hat y_i|,
+$$
+
+
+
+$$
 R^2=1-\frac{\sum_i(y_i-\hat y_i)^2}{\sum_i(y_i-\bar y)^2},
-\]
+$$
+
 
 where `R²` is undefined if fewer than two matched observations exist or observed variance is zero. The diagnostics also include `n_accepted` and `longest_gap_days`. **These are in-sample reconstruction diagnostics, not independent cross-validation or external accuracy assessments.** In particular, linear interpolation generally passes through the accepted observation values, so an in-sample RMSE near zero should not be interpreted as superior predictive skill.
 
@@ -164,12 +182,16 @@ Within `calculate_quant_one`, dates and NDVI values are converted to appropriate
 
 The seasonal peak is the global maximum of the analyzed series, at index `peak_pos`. The peak must have at least two records before it and two after it. The seasonal baseline is the **minimum NDVI occurring at or before the peak**, not necessarily the first observation or a measured planting date. Define
 
-\[
+
+$$
 NDVI_{min}=\min_{t\le t_{peak}}NDVI(t),\qquad NDVI_{max}=NDVI(t_{peak}),
-\]
-\[
+$$
+
+
+$$
 A=NDVI_{max}-NDVI_{min}.
-\]
+$$
+
 
 A non-finite amplitude or an amplitude `A <= 0.05` raises an error. This is an NDVI-unit threshold, not a percentage. A single global maximum and its preceding minimum are used; no automatic multi-cycle segmentation is implemented in this core.
 
@@ -177,9 +199,11 @@ A non-finite amplitude or an amplitude `A <= 0.05` raises an error. This is an N
 
 The default percentage thresholds are Q1 = 10, Q2 = 90, Q3 = 90 and Q4 = 50. For each transition `Qi`, the corresponding absolute NDVI threshold is
 
-\[
+
+$$
 T_{Qi}=NDVI_{min}+\frac{q_i}{100}A.
-\]
+$$
+
 
 All percentages must lie strictly between 0 and 100; additionally `Q1 < Q2` and `Q4 < Q3`. The UI permits increments of 0.1 percentage point between 0.1% and 99.9%, subject to these relational constraints. The rising limb extends from the pre-peak minimum through the peak; the falling limb extends from the peak to the last analyzed date.
 
@@ -196,9 +220,11 @@ These are spectral amplitude crossings and should not be presented as direct fie
 
 The algorithm searches successive valid daily values `(y0, y1)`. Rising crossings require `y0 <= T <= y1` and `y1 > y0`; falling crossings require `y0 >= T >= y1` and `y1 < y0`. For an eligible pair with timestamps `t0`, `t1`, the crossing date is linearly interpolated:
 
-\[
+
+$$
 f=\frac{T-y_0}{y_1-y_0},\qquad t_Q=t_0+f(t_1-t_0).
-\]
+$$
+
 
 If more than one crossing occurs, **the first rising crossing** is selected for Q1/Q2 and **the last falling crossing** for Q3/Q4. This choice matters if residual NDVI oscillations remain. If no eligible crossing exists, the transition is missing (`NaT`). Interpolated timestamps may contain fractions of a day; day-of-year outputs refer to the calendar day containing the timestamp.
 
@@ -206,15 +232,21 @@ If more than one crossing occurs, **the first rising crossing** is selected for 
 
 The NDVI-derived cycle start is the date of the pre-peak minimum, `t_min`. For four detected transitions, the implementation calculates durations in decimal days:
 
-\[
+
+$$
 D_{INI}=t_{Q1}-t_{min},\quad D_{DEV}=t_{Q2}-t_{Q1},
-\]
-\[
+$$
+
+
+$$
 D_{MID}=t_{Q3}-t_{Q2},\quad D_{END}=t_{Q4}-t_{Q3},
-\]
-\[
+$$
+
+
+$$
 D_{total}=t_{Q4}-t_{min}.
-\]
+$$
+
 
 A parcel is `Complete` when all four crossings exist and no calculated duration is negative; otherwise it is `Incomplete`, with duration fields set to missing values for absent transitions (or retained values when a negative-duration check fails, depending on the executed path). Structural and amplitude failures raise exceptions that the graphical layer records as `Error` with an explanatory message. An incomplete parcel must not be treated as a complete four-stage cycle.
 
@@ -263,7 +295,11 @@ The Water Analysis module receives parcel-level, daily reconstructed NDVI (`ndvi
 
 For each parcel and day, a selected linear relationship is applied:
 
-\[K_{c,t}=\max\left(0,a\,NDVI_t+b\right).\]
+
+$$
+K_{c,t}=\max\left(0,a\,NDVI_t+b\right).
+$$
+
 
 Here, `a` and `b` are the selected formulation coefficients. Negative Kc values are clipped to zero by default; no upper Kc cap is imposed by this function. The application requires validation of both crop assignment and Kc–NDVI formulation before calculating results. Formulations are selected from a built-in crop library or user-defined entries. The built-in library is immutable through the user library interface; custom entries are stored separately under `%APPDATA%/CropWater-RS/kc_ndvi_library.json` on Windows. Custom entries require finite `a` and `b`, a label and a crop list.
 
@@ -288,7 +324,11 @@ The following table documents the **released v2.0.0 catalog**; the equations sho
 
 Crop evapotranspiration is estimated using the single-coefficient approach:
 
-\[ET_{c,t}=K_{c,t}\,ET_{0,t},\]
+
+$$
+ET_{c,t}=K_{c,t}\,ET_{0,t},
+$$
+
 
 where both `ETc` and `ETo` are expressed in mm d⁻¹. The application does not estimate `ET0` internally or independently account for soil evaporation and crop transpiration.
 
@@ -298,7 +338,11 @@ where both `ETc` and `ETo` are expressed in mm d⁻¹. The application does not 
 
 Daily net irrigation water requirement is calculated as:
 
-\[IWR_{net,t}=\max\left(ET_{c,t}-P_{e,t},0\right),\]
+
+$$
+IWR_{net,t}=\max\left(ET_{c,t}-P_{e,t},0\right),
+$$
+
 
 where `Pe` is user-supplied **effective**, not necessarily total, precipitation. A negative daily deficit is set to zero before accumulation; therefore precipitation surpluses are not carried over to subsequent days. The result is a simplified daily atmospheric-demand-minus-effective-rainfall deficit, **not** a full root-zone soil-water balance and **not** gross irrigation demand. Irrigation application efficiency, soil-water storage, capillary rise, runoff, deep percolation and other balance terms are not modeled by these functions.
 
@@ -308,9 +352,13 @@ where `Pe` is user-supplied **effective**, not necessarily total, precipitation.
 
 For each parcel, daily outputs include `kc`, `etc_mm`, `iwr_net_mm`, `etc_cumulative_mm` and `iwr_cumulative_mm`. In `qt_water_page.py`, cumulative columns are computed using `cumsum()` over each parcel's complete reconstructed daily series, sorted by date. **These cumulative columns do not automatically restart at sowing.** Separate phase and crop-cycle totals are computed by summing the selected dates in the reporting layer.
 
-For any reporting period \(T\):
+For any reporting period $T$:
 
-\[ET_{c,T}=\sum_{t\in T}ET_{c,t},\qquad IWR_{net,T}=\sum_{t\in T}IWR_{net,t}.\]
+
+$$
+ET_{c,T}=\sum_{t\in T}ET_{c,t},\qquad IWR_{net,T}=\sum_{t\in T}IWR_{net,t}.
+$$
+
 
 **Source:** `qt_water_page.py`, `calculate`; `qt_water_phase_core.py`, `summarize_water`.
 
