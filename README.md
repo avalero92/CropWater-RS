@@ -1,122 +1,77 @@
 # CropWater-RS
 
-<p align="center">
-  <img src="assets/cropwater_rs_logo.png" alt="CropWater-RS logo" width="520">
-</p>
+![](https://raw.githubusercontent.com/avalero92/CropWater-RS/main/assets/cropwater_rs_logo.png)
 
-<p align="center">
-  <a href="https://doi.org/10.5281/zenodo.22746413">
-    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22746413.svg" alt="DOI">
-  </a>
-</p>
+[![](https://zenodo.org/badge/DOI/10.5281/zenodo.22746413.svg)](https://doi.org/10.5281/zenodo.22746413)
 
-**Remote Sensing · Phenology · Irrigation**
-
-CropWater-RS is a desktop scientific application for parcel-level crop monitoring and irrigation-water analysis using Sentinel-2 vegetation dynamics and user-supplied meteorological data.
+CropWater-RS is an open-source desktop application for parcel-level crop monitoring and irrigation-water analysis. Version 2.0.0 combines Sentinel-2 Level-2A imagery, NDVI quality control and daily temporal reconstruction, QUANT-based phenological transitions, crop-coefficient relationships, evapotranspiration and simplified net irrigation requirements in a graphical workflow.
 
 ## Main capabilities
 
-- Import polygon parcels from SHP, GeoPackage and GeoJSON.
-- Assign crop labels manually or in batch from user-selected vector attributes.
-- Retrieve Sentinel-2 L2A parcel statistics through the Copernicus Data Space Ecosystem (CDSE).
-- Calculate parcel-level NDVI with SCL-based quality masking.
-- Reconstruct temporal trajectories using Linear, Whittaker, Savitzky-Golay or Kalman methods.
-- Apply direct literature-based Kc–NDVI relationships at parcel level.
-- Estimate ETc/CWR as `Kc × ETo`.
-- Optionally estimate simplified net IWR as `max(ETc - Pe, 0)`.
-- Perform parcel-wise QUANT phenological partitioning on reconstructed daily NDVI.
-- Summarize CWR/IWR by QUANT-derived phases.
-- Visualize NDVI, Kc/CWR/IWR and parcel-level spatial results.
-- Export CSV, GeoPackage and reproducibility metadata.
+- Import parcel polygons from supported vector formats (including SHP, GeoPackage and GeoJSON), with crop and parcel-identifier attributes.
+- Retrieve parcel-level Sentinel-2 L2A NDVI statistics through the Copernicus Data Space Ecosystem (CDSE).
+- Apply Sentinel-2 Scene Classification Layer (SCL) masking and observation-quality screening.
+- Reconstruct daily NDVI trajectories using linear, Whittaker, Savitzky–Golay or Kalman approaches.
+- Identify parcel-level Q1–Q4 spectral transitions using an adapted QUANT approach.
+- Assign sowing dates from vector attributes, manual agronomic information or a user-defined retrospective offset from Q1.
+- Apply built-in or user-defined NDVI–crop-coefficient relationships, subject to their original calibration domains.
+- Calculate daily crop evapotranspiration and simplified net irrigation requirements from supplied meteorological data.
+- Inspect parcel-level curves, water-analysis summaries and spatial outputs; save and reopen `.cwrs` projects and export analysis results.
 
 ## Scientific workflow
 
-`Sentinel-2 L2A → parcel NDVI → temporal reconstruction → Kc → ETc/CWR → optional net IWR`
+`Sentinel-2 L2A → SCL masking → parcel NDVI → quality control → daily reconstruction → crop coefficient → ETc → simplified net IWR`
 
-An independent QUANT module can additionally derive FAO-56-style phase boundaries from each parcel's reconstructed daily NDVI curve.
+QUANT-based spectral transitions provide an additional phenological partitioning step. **Sowing-date assignment is separate from QUANT** and may be based on a vector attribute, a manual date, or a retrospective Q1 offset.
 
-## Installation
+## Installation and getting started
 
-Recommended: Python 3.12 in a clean environment.
+For **v2.0.0 on Windows**, use the installer supplied with the matching v2.0.0 distribution once the GitHub Release is published. See [installation instructions](docs/INSTALLATION.md) and the [user guide](USER_GUIDE.md). To run from source, use the PySide6 entry point `cropwater_rs_qt.py` and `requirements-qt.txt` as documented in the installation guide.
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python cropwater_rs.py
-```
+For data acquisition, users must supply their own CDSE credentials. **Never commit Client Secrets or credentials to the repository.**
 
-## CDSE credentials
+## Input data
 
-CropWater-RS uses user-owned Copernicus Data Space Ecosystem OAuth credentials. Never commit or publish a Client Secret.
+- Parcel polygons with a stable parcel identifier and optional crop and sowing-date attributes.
+- User-supplied daily meteorological data, including `Date,ETo` for ETc; add `Pe` for simplified net IWR. Optional parcel-specific meteorology depends on the imported dataset and workflow.
 
-## Parcel attributes
+Example:
 
-Crop labelling can be manual or imported from vector attributes. The application proposes `parcel_id`/`ID` and `crop`/`CROPS`, but any suitable columns can be selected.
-
-## Meteorological CSV
-
-For ETc/CWR:
-
-```text
-Date,ETo
-2026-01-01,1.9
-```
-
-For simplified net IWR:
-
-```text
+```csv
 Date,ETo,Pe
 2026-01-01,1.9,0.0
+2026-01-02,2.1,0.0
 ```
 
-An optional `parcel_id` column can provide parcel-specific meteorology.
+## Core calculations and interpretation
 
-## Important methodological note
+For a selected relationship, `Kc = a × NDVI + b` (with nonnegative clipping as implemented), `ETc = Kc × ETo`, and `IWRnet,d = max(ETc,d − Pe,d, 0)`.
 
-`ETc = Kc × ETo`
+The IWR calculation is a **simplified daily net requirement**, not a full soil-water balance or a gross irrigation allocation. Individual literature models may refer to Kc, basal Kcb or other reference definitions; their transferability must be evaluated before application.
 
-`IWRnet,d = max(ETc,d - Pe,d, 0)`
+## Scientific documentation
 
-The implemented net IWR is a simplified daily requirement, not a complete soil-water balance. It does not represent soil-water storage, runoff, deep percolation, capillary rise or irrigation efficiency.
+- [Scientific methodology, algorithms and reproducibility](SCIENTIFIC_METHODOLOGY.md) — authoritative methodological description for v2.0.0.
+- [User guide](USER_GUIDE.md) — practical application workflow.
+- [Installation](docs/INSTALLATION.md) — distribution and setup notes.
+- [QUANT method](docs/QUANT_METHOD.md) and [Kc–NDVI library](docs/KC_NDVI_LIBRARY.md) — supplementary descriptions.
 
-## QUANT
+## Reproducibility and outputs
 
-QUANT is applied independently to each parcel's reconstructed daily NDVI curve. The user controls the amplitude percentages used to determine transitions. Default thresholds follow French et al. (2023): 10% and 90% on the rising limb, 90% on the falling limb for the end of mid-season, and 50% on the falling limb for end of season.
-
-See `docs/QUANT_METHOD.md`.
-
-## Kc–NDVI library
-
-The built-in catalogue distinguishes primary-source-verified entries from relationships still requiring primary-source audit. User-defined relationships are explicitly marked as unverified.
-
-See `docs/KC_NDVI_LIBRARY.md`.
-
-
-## Repository
-
-Official source repository:
-
-`https://github.com/avalero92/CropWater-RS`
+Retain the input parcel geometries, dates, meteorological inputs, selected NDVI reconstruction settings, QUANT thresholds, sowing-date provenance, coefficient model and exported results. The `.cwrs` project format supports saving and reopening application work; project files do not replace the original external datasets or source provenance.
 
 ## Citation
 
-If you use CropWater-RS in research or scientific applications, please cite:
+**Author:** Alexey Valero-Jorge — Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA), Aragón, Spain.
 
-> Valero-Jorge, A. (2026). *CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit* (Version 1.0.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22746413
+Cite the software using the [CITATION.cff](CITATION.cff) metadata and the relevant Zenodo version record. Concept DOI: [10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.22746413). For an archived version, use its version-specific DOI when available.
 
 ## License
 
-GNU General Public License v3.0 only (`GPL-3.0-only`). See `LICENSE`.
+GNU General Public License v3.0 only (`GPL-3.0-only`). See [LICENSE](LICENSE).
 
-## Author
+## Contact
 
-**Alexey Valero-Jorge**
-
-> Affiliation: CENTRO DE INVESTIGACIÓN Y TECNOLOGÍA AGROALIMENTARIA DE ARAGÓN.
-
-> ORCID: https://orcid.org/0000-0002-5993-7346
-
-> Email: avalero@cita-aragon.es
-
-> Repository/DOI: https://doi.org/10.5281/zenodo.22746413
+- ORCID: [0000-0002-5993-7346](https://orcid.org/0000-0002-5993-7346)
+- Email: avalero@cita-aragon.es
+- Source repository: https://github.com/avalero92/CropWater-RS

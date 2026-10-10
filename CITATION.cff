@@ -1,12 +1,13 @@
 cff-version: 1.2.0
-message: "If you use CropWater-RS in your research, please cite this software."
+message: "If you use CropWater-RS in your research, please cite the software and its version-specific Zenodo record when available."
 title: "CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit"
 type: software
 authors:
   - family-names: "Valero-Jorge"
     given-names: "Alexey"
-version: "1.0.1"
-date-released: "2026-09-14"
+    affiliation: "Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA)"
+    orcid: "https://orcid.org/0000-0002-5993-7346"
+version: "2.0.0"
 license: "GPL-3.0-only"
 repository-code: "https://github.com/avalero92/CropWater-RS"
 keywords:

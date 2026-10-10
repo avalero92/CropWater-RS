@@ -1,13 +1,37 @@
-name: tests
-on: [push, pull_request]
+name: CropWater-RS v2 tests
+
+on:
+  push:
+    branches: [main, "release/**"]
+  pull_request:
+  workflow_dispatch:
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  scientific-and-qt:
+    name: Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      QT_QPA_PLATFORM: offscreen
+      MPLBACKEND: Agg
+      PYTHONPATH: .:src
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install --upgrade pip
-      - run: pip install -r requirements.txt pytest
-      - run: pytest -q
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-qt.txt
+      - name: Install Qt application and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-qt.txt pytest
+      - name: Validate Python syntax
+        run: python -m compileall -q cropwater_rs_qt.py qt_cdse_acquisition.py qt_cdse_dates.py qt_cdse_raster.py qt_credentials.py qt_kc_library_store.py qt_preprocessing_core.py qt_preprocessing_page.py qt_project_io.py qt_quant_page.py qt_quant_scope.py qt_reconstruction_core.py qt_spatial_view.py qt_water_page.py qt_water_phase_core.py src
+      - name: Scientific regression and Qt integration tests
+        run: python -m pytest -q -c pytest-v2.ini tests/test_beta39_scientific_validation.py tests/test_beta31_preprocessing.py tests/test_beta280_credentials.py tests/test_regression_v1.py tests/test_architecture_alpha4.py tests/test_beta2_6_raster.py tests/test_beta2_7_3_geometry_fix.py tests/test_v2_qt_smoke.py

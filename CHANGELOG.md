@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.0.0] — Unreleased (publication pending)
+
+### Added and changed
+- PySide6 desktop application workflow replacing the earlier Tkinter interface.
+- `.cwrs` project saving and reopening.
+- Expanded observation quality control and parcel-level water-analysis reporting.
+- Sowing-date assignment from vector attributes, manual entry or retrospective Q1 offsets.
+- Windows installer and packaged distribution workflow.
+- Scientific methodology and reproducibility documentation for v2.0.0.
+
+### Scientific continuity
+- Maintained adapted QUANT Q1–Q4 threshold defaults (10%, 90%, 90%, 50%).
+- Retained the documented NDVI-to-coefficient, ETc and simplified net IWR calculation framework.
+
+
 ## [1.0.1] - 2026-09-14
 
 ### Fixed

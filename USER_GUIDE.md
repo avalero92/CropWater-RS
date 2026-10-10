@@ -1,45 +1,54 @@
-# CropWater-RS User Guide — v1.0.0
+# CropWater-RS User Guide — v2.0.0
 
-## 1. Start
-Install dependencies from `requirements.txt`, then run `python cropwater_rs.py`.
+This guide describes the **v2.0.0 PySide6 application**. Consult [SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md) for scientific definitions, assumptions and limitations.
 
-## 2. Load parcels
-Open a polygon SHP, GeoPackage or GeoJSON.
+## 1. Install and launch
 
-Choose either:
-- **Manual assignment**: select each parcel, choose a crop and press **Assign**.
-- **Use vector attributes**: choose the ID and crop fields and apply them in batch.
+Install the validated Windows distribution from the matching v2.0.0 GitHub Release when published. See [docs/INSTALLATION.md](docs/INSTALLATION.md). Do not assume that the source-installation instructions for the legacy v1.x Tkinter application apply to v2.0.0.
 
-## 3. Configure CDSE
-Enter your Client ID and Client Secret, then define the date range, aggregation interval and valid-pixel threshold.
+## 2. Load parcel geometries
 
-## 4. NDVI
-Calculate one parcel or all parcels. Use Previous/Next to inspect trajectories.
+Import the parcel polygon dataset. Check its coordinate system and identify the parcel ID, crop attribute and, when available, the sowing-date attribute. Review any missing or ambiguous values before processing.
 
-## 5. Temporal processing
-Available methods: Raw, Linear, Whittaker, Savitzky-Golay and Kalman.
+## 3. Configure CDSE access
 
-Daily reconstructed output is recommended for accumulated water requirements.
+Enter user-owned Copernicus Data Space Ecosystem credentials in the application and choose the acquisition period. Do not share Client Secrets or embed credentials in project archives or screenshots.
 
-## 6. QUANT phenology
-Run QUANT after temporal reconstruction. It processes every parcel independently, identifies Q1–Q4, displays the transitions on the parcel curve and flags incomplete cases rather than forcing dates.
+## 4. Retrieve and inspect NDVI
 
-## 7. Kc–NDVI
-Select a direct relationship compatible with the crop, or add a user relationship through the library manager.
+Run Sentinel-2 L2A parcel-level extraction. Inspect SCL masking and quality-control results; rejected observations and sparse acquisition periods can affect the reconstructed time series.
 
-## 8. Meteorology
-Load `Date,ETo` for ETc/CWR, or `Date,ETo,Pe` for simplified net IWR. Optional `parcel_id` provides parcel-specific meteorology.
+## 5. Reconstruct daily NDVI
 
-## 9. Water requirements
+Select a supported method: linear interpolation, Whittaker, Savitzky–Golay or Kalman. Inspect the resulting curve and record the selected settings. Reconstruction does not create independent field observations.
+
+## 6. Analyze QUANT transitions
+
+Run the adapted QUANT method to identify Q1–Q4 on the daily NDVI trajectory. Default amplitude thresholds are 10%, 90%, 90% and 50%. A pre-peak spectral minimum is a cycle baseline, **not an observed sowing date**.
+
+## 7. Assign sowing date
+
+The application supports three sources: (1) a date stored in the input vector attributes, (2) manual assignment based on agronomic knowledge or a defined assumption, or (3) `sowing date = Q1 date − user-defined offset in days`. The third approach requires a valid Q1 and is a CropWater-RS convention, not the planting-date procedure from French et al. (2023). If more than one source is available, the current implementation resolves them in this order: manual override, vector attribute, then Q1 offset.
+
+## 8. Select a crop-coefficient relationship
+
+Choose a compatible built-in or user-defined NDVI-based model. Inspect the coefficient type and original calibration domain; Kcb should not be assumed identical to Kc. See the [scientific methodology](SCIENTIFIC_METHODOLOGY.md).
+
+## 9. Load meteorological inputs
+
+Provide daily reference evapotranspiration (`ETo`, mm/day). Include effective precipitation (`Pe`, mm/day) for net IWR estimates. Validate date parsing, units, gaps and the intended parcel association.
+
+## 10. Calculate water requirements
+
 - `ETc = Kc × ETo`
-- `CWR = ETc`
-- `IWRnet,d = max(ETc,d - Pe,d, 0)`
+- `IWRnet,d = max(ETc,d − Pe,d, 0)`
 
-## 10. Spatial view
-Spatial outputs are parcel summaries, not pixel-level NDVI rasters.
+The net IWR estimate is simplified and excludes soil-water storage and irrigation efficiency. Review phase-based totals separately from whole-series cumulative columns.
 
-## 11. Export
-Export raw/processed NDVI, water results, QUANT results, run metadata and parcel-level GeoPackage outputs.
+## 11. Save projects and export
 
-## 12. Logs
-Logs are written to `.cropwater_rs/cropwater_rs.log` under the user's home directory.
+Save the session as a `.cwrs` project and export the relevant NDVI, QUANT, water-analysis and parcel-level results. Preserve the external input datasets and settings for reproducibility.
+
+## 12. Troubleshooting
+
+For unexpected results, check data availability, the SCL mask, QC thresholds, reconstructed NDVI, QUANT transition completeness, sowing-date provenance, meteorological coverage and model selection before interpreting ETc/IWR outputs.

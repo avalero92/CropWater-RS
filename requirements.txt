@@ -7,3 +7,5 @@ scipy>=1.11
 sentinelhub>=3.11
 pyproj>=3.6
 pyogrio>=0.9
+contextily>=1.6
+rasterio>=1.3
