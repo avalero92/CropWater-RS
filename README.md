@@ -64,7 +64,7 @@ Retain the input parcel geometries, dates, meteorological inputs, selected NDVI 
 
 **Author:** Alexey Valero-Jorge — Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA), Aragón, Spain.
 
-Cite the software using the [CITATION.cff](CITATION.cff) metadata and the relevant Zenodo version record. Concept DOI: [10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.23279404). For an archived version, use its version-specific DOI when available.
+Cite **CropWater-RS v2.0.0** using the [CITATION.cff](CITATION.cff) metadata and its version-specific Zenodo DOI: [10.5281/zenodo.23279404](https://doi.org/10.5281/zenodo.23279404). Earlier releases have their own version-specific DOIs (for example, [v1.0.1: 10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.22746413)).
 
 ## License
 
