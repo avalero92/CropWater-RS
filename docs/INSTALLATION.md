@@ -2,7 +2,7 @@
 
 ## Windows distribution (recommended)
 
-Use the installer supplied with the **matching v2.0.0 distribution**. Run the application through its installed shortcut and retain a copy of the installer and release identifier for reproducibility.
+Download [CropWater-RS_2.0.0_Setup.exe](https://github.com/avalero92/CropWater-RS/releases/download/v2.0.0/CropWater-RS_2.0.0_Setup.exe) from the [official v2.0.0 release](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0). A matching `.sha256` checksum is also provided in the release assets. Run the application through its installed shortcut and retain a copy of the installer and release identifier for reproducibility.
 
 ## Source-code execution
 
