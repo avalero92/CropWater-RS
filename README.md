@@ -2,12 +2,12 @@
 
 ![](https://raw.githubusercontent.com/avalero92/CropWater-RS/main/assets/cropwater_rs_logo.png)
 
-[![DOI: 10.5281/zenodo.23279404](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23279404-blue)](https://doi.org/10.5281/zenodo.23279404)
-[![GitHub Release](https://img.shields.io/github/v/release/avalero92/CropWater-RS?label=release)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0)
+[![DOI: 10.5281/zenodo.23351273](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23351273-blue)](https://doi.org/10.5281/zenodo.23351273)
+[![GitHub Release](https://img.shields.io/github/v/release/avalero92/CropWater-RS?label=release)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.1)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0--only-green)](LICENSE)
-[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D4)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D4)](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.1)
 
-CropWater-RS is an open-source desktop application for parcel-level crop monitoring and irrigation-water analysis. Version 2.0.0 combines Sentinel-2 Level-2A imagery, NDVI quality control and daily temporal reconstruction, QUANT-based phenological transitions, crop-coefficient relationships, evapotranspiration and simplified net irrigation requirements in a graphical workflow.
+CropWater-RS is an open-source desktop application for parcel-level crop monitoring and irrigation-water analysis. Version 2.0.1 combines Sentinel-2 Level-2A imagery, NDVI quality control and daily temporal reconstruction, QUANT-based phenological transitions, crop-coefficient relationships, evapotranspiration and simplified net irrigation requirements in a graphical workflow.
 
 ## Main capabilities
 
@@ -29,7 +29,7 @@ QUANT-based spectral transitions provide an additional phenological partitioning
 
 ## Installation and getting started
 
-For **v2.0.0 on Windows**, download and run [CropWater-RS_2.0.0_Setup.exe](https://github.com/avalero92/CropWater-RS/releases/download/v2.0.0/CropWater-RS_2.0.0_Setup.exe) from the [official v2.0.0 GitHub Release](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.0). The release also provides a SHA-256 checksum file for integrity verification. See [installation instructions](docs/INSTALLATION.md) and the [user guide](USER_GUIDE.md). To run from source, use the PySide6 entry point `cropwater_rs_qt.py` and `requirements-qt.txt` as documented in the installation guide.
+For **v2.0.1 on Windows**, download and run [CropWater-RS_2.0.1_Setup.exe](https://github.com/avalero92/CropWater-RS/releases/download/v2.0.1/CropWater-RS_2.0.1_Setup.exe) from the [official v2.0.1 GitHub Release](https://github.com/avalero92/CropWater-RS/releases/tag/v2.0.1). The v2.0.1 release notes provide the installer SHA-256 checksum for integrity verification. See [installation instructions](docs/INSTALLATION.md) and the [user guide](USER_GUIDE.md). To run from source, use the PySide6 entry point `cropwater_rs_qt.py` and `requirements-qt.txt` as documented in the installation guide.
 
 For data acquisition, users must supply their own CDSE credentials. **Never commit Client Secrets or credentials to the repository.**
 
@@ -54,7 +54,7 @@ The IWR calculation is a **simplified daily net requirement**, not a full soil-w
 
 ## Scientific documentation
 
-- [Scientific methodology, algorithms and reproducibility](SCIENTIFIC_METHODOLOGY.md) — authoritative methodological description for v2.0.0.
+- [Scientific methodology, algorithms and reproducibility](SCIENTIFIC_METHODOLOGY.md) — authoritative methodological description for the v2.0.x series.
 - [User guide](USER_GUIDE.md) — practical application workflow.
 - [Installation](docs/INSTALLATION.md) — distribution and setup notes.
 - [QUANT method](docs/QUANT_METHOD.md) and [Kc–NDVI library](docs/KC_NDVI_LIBRARY.md) — supplementary descriptions.
@@ -67,7 +67,11 @@ Retain the input parcel geometries, dates, meteorological inputs, selected NDVI 
 
 **Author:** Alexey Valero-Jorge — Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA), Aragón, Spain.
 
-Cite **CropWater-RS v2.0.0** using the [CITATION.cff](CITATION.cff) metadata and its version-specific Zenodo DOI: [10.5281/zenodo.23279404](https://doi.org/10.5281/zenodo.23279404). Earlier releases have their own version-specific DOIs (for example, [v1.0.1: 10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.22746413)).
+Cite **CropWater-RS v2.0.1** using the [CITATION.cff](CITATION.cff) metadata and its version-specific Zenodo DOI: [10.5281/zenodo.23351273](https://doi.org/10.5281/zenodo.23351273).
+
+**Previous versions:** [v2.0.0 — 10.5281/zenodo.23279404](https://doi.org/10.5281/zenodo.23279404); [v1.0.1 — 10.5281/zenodo.22746413](https://doi.org/10.5281/zenodo.22746413).
+
+**All versions (concept DOI):** [10.5281/zenodo.22746412](https://doi.org/10.5281/zenodo.22746412).
 
 ## License
 
