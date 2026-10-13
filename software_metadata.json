@@ -1,6 +1,6 @@
 {
   "software_name": "CropWater-RS",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "Alexey Valero-Jorge",
   "affiliation": "Centro de Investigación y Tecnología Agroalimentaria de Aragón (CITA), Aragón, Spain",
   "email": "avalero@cita-aragon.es",
@@ -8,5 +8,5 @@
   "repository_url": "https://github.com/avalero92/CropWater-RS",
   "zenodo_doi": "10.5281/zenodo.22746413",
   "license": "GPL-3.0-only",
-  "preferred_citation": "Valero-Jorge, A. (2026). CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit (Version 2.0.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.22746413"
+  "preferred_citation": "Valero-Jorge, A. (2026). CropWater-RS: Remote Sensing-based Crop Water Requirement and Phenology Toolkit (Version 2.0.1) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23279404"
 }
