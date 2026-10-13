@@ -26,6 +26,16 @@ from PySide6.QtWidgets import (
 )
 
 ROOT = Path(__file__).resolve().parent
+
+def _software_version():
+    """Read the bundled release version; keep a safe fallback for local development."""
+    try:
+        with (ROOT / 'software_metadata.json').open('r', encoding='utf-8') as stream:
+            return str(json.load(stream)['version'])
+    except (OSError, ValueError, KeyError, TypeError):
+        return '2.0.1'
+
+APP_VERSION = _software_version()
 NAV = ['Home', 'Data Acquisition', 'Preprocessing', 'Time Series',
        'Water Analysis', 'Spatial View']
 STYLE = """
@@ -253,7 +263,7 @@ class AcquisitionPage(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('CropWater-RS — 2.0.0 | Untitled project')
+        self.setWindowTitle(f'CropWater-RS — {APP_VERSION} | Untitled project')
         self.resize(1600,900)
         ico=ROOT/'assets'/'cropwater_rs.ico'
         if ico.exists(): self.setWindowIcon(QIcon(str(ico)))
@@ -307,7 +317,7 @@ class MainWindow(QMainWindow):
         split.setStretchFactor(0,0);split.setStretchFactor(1,1);split.setStretchFactor(2,0)
         split.setSizes(self._saved_panel_sizes);outer.addWidget(split,1)
         self.inspector.hide()
-        status=QStatusBar(); self.setStatusBar(status); status.showMessage('2.0.0 · Portable project workspace')
+        status=QStatusBar(); self.setStatusBar(status); status.showMessage(f'{APP_VERSION} · Portable project workspace')
         self.setStyleSheet(STYLE); self._connect_overview_updates(); self.change_page(0)
 
     def _project_tables(self):
@@ -360,7 +370,7 @@ class MainWindow(QMainWindow):
         except Exception as exc:QMessageBox.critical(self,'Save project failed',str(exc))
 
     def _update_project_label(self):
-        self.setWindowTitle('CropWater-RS — 2.0.0 | '+self.project_name)
+        self.setWindowTitle(f'CropWater-RS — {APP_VERSION} | '+self.project_name)
         if hasattr(self,'home_project_label'):
             self.home_project_label.setText(self.project_name+' · '+(self.project_path or 'Not saved'))
 

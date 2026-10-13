@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.1] — 2026-10-13
+
+### Fixed
+- Include the compiled `tomli` mypyc extension in the Windows PyInstaller distribution, fixing the CDSE acquisition import error in the installed application.
+- Add build-time verification that the required compiled extension is present in the packaged distribution.
+
+### Scope and validation
+- Windows packaging maintenance release; no intended changes to scientific algorithms relative to v2.0.0.
+- Windows executable, installer, and installed CDSE acquisition tested successfully by the maintainer.
+- Preserve v2.0.0 as a historical release.
+
 ## [2.0.0] — 2026-10-10
 
 ### Added and changed
